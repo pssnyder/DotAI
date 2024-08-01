@@ -15,11 +15,11 @@ GREEN = (0, 250, 0)
 BLUE = (0, 0, 250)
 
 # SIMULATION CONFIGURATION
-MAX_VELOCITY = 5
-POPULATION_SIZE = 1
+MAX_VELOCITY = 10
+POPULATION_SIZE = 1000
 LEARNING_RATE = 0.1
 DISCOUNT_FACTOR = 0.95
-EPSILON = 0.1  # Exploration rate
+EPSILON = 0.5  # Exploration rate
 GRID_SIZE = 10  # Coarser grid to reduce Q-table size
 
 # GAME UI CONFIGURATION
@@ -29,14 +29,14 @@ FONT_SIZE = 20
 FONT_COLOR = GREEN
 DOT_SIZE = 2
 DOT_COLOR = WHITE
-BEST_DOT_SIZE = 5  # Larger size so its more visible
+BEST_DOT_SIZE = 4  # Larger size so its more visible
 BEST_DOT_COLOR = RED  # Highlight color for best dot
-GOAL = (WIDTH // 2, HEIGHT // 2)  # Goal placement x, y
+GOAL = (WIDTH // 2, 25)  # Goal placement x, y
 GOAL_SIZE = 6
 GOAL_COLOR = GREEN
 
 # OBSTACLE CONFIGURATION
-OBSTACLE_COUNT = 5
+OBSTACLE_COUNT = 4
 OBSTACLE_COLOR = WHITE
 OBSTACLE_MIN_WIDTH = 0
 OBSTACLE_MAX_WIDTH = 500
@@ -71,7 +71,7 @@ log.addHandler(console_handler)
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 class Dot:
-    def __init__(self, width, height, goal, obstacles):
+    def __init__(self, width, height, goal, obstacles, is_copy=False):
         self.pos = [width / 2, height - 10]
         self.vel = [0, 0]
         self.acc = [0, 0]
@@ -83,10 +83,11 @@ class Dot:
         self.goal = goal
         self.obstacles = obstacles
         self.is_best = False
-        self.is_copy = False
+        self.is_copy = is_copy
         self.q_table = np.zeros((width // GRID_SIZE, height // GRID_SIZE, 8))  # Q-table for Q-learning
         self.state = (int(self.pos[0]) // GRID_SIZE, int(self.pos[1]) // GRID_SIZE)
         self.action = None
+        self.previous_positions = []
 
     def move(self):
         """Move the dot according to its directions."""
@@ -99,6 +100,7 @@ class Dot:
         self.pos[0] += self.vel[0]
         self.pos[1] += self.vel[1]
         self.state = (int(self.pos[0]) // GRID_SIZE, int(self.pos[1]) // GRID_SIZE)
+        self.previous_positions.append((int(self.pos[0]), int(self.pos[1])))
 
     def limit_velocity(self, max_velocity):
         """Limit the velocity of the dot."""
@@ -158,12 +160,23 @@ class Dot:
         td_error = td_target - self.q_table[state[0], state[1], action]
         self.q_table[state[0], state[1], action] += LEARNING_RATE * td_error
 
+    def reset(self):
+        self.pos = [self.width / 2, self.height - 10]
+        self.vel = [0, 0]
+        self.acc = [0, 0]
+        self.dead = False
+        self.reached_goal = False
+        self.state = (int(self.pos[0]) // GRID_SIZE, int(self.pos[1]) // GRID_SIZE)
+        self.action = None
+        self.previous_positions = []
+
 class Population:
     def __init__(self, size, width, height, goal, obstacles):
         self.dots = [Dot(width, height, goal, obstacles) for _ in range(size)]
         self.gen = 1
         self.max_fitness = 0
         self.average_fitness = 0
+        self.best_dot = None
 
     def update(self):
         for dot in self.dots:
@@ -176,7 +189,18 @@ class Population:
             total_fitness += dot.fitness
             if dot.fitness > self.max_fitness:
                 self.max_fitness = dot.fitness
+                self.best_dot = dot
         self.average_fitness = total_fitness / len(self.dots)
+
+    def reset_population(self):
+        best_dot = self.best_dot
+        self.dots = [Dot(best_dot.width, best_dot.height, best_dot.goal, best_dot.obstacles) for _ in range(POPULATION_SIZE)]
+        self.dots[0] = best_dot
+        self.dots[0].is_best = True
+        self.dots[0].reset()
+        for dot in self.dots[1:]:
+            dot.q_table = best_dot.q_table.copy()
+        self.gen += 1
 
 def generate_obstacles():
     obstacles = []
@@ -205,8 +229,8 @@ def main():
     running = True
 
     # Initialize metrics
-    #best_fitness = 0
-    #average_fitness = 0
+    best_fitness = 0
+    average_fitness = 0
     dots_reached_goal = 0
 
     while running:
@@ -238,11 +262,11 @@ def main():
         # Check if all dots are dead or have reached the goal
         if all(dot.dead or dot.reached_goal for dot in population.dots):
             population.calculate_fitness()
-            population.gen += 1
             log.debug(f"Generation: {population.gen}")
             log.debug(f"Best Fitness: {population.max_fitness:.4f}")
             log.debug(f"Average Fitness: {population.average_fitness:.4f}")
             log.debug(f"Dots Reached Goal: {sum(dot.reached_goal for dot in population.dots)}")
+            population.reset_population()
 
         # Render metrics
         metrics = [
