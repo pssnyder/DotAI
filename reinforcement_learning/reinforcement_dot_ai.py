@@ -14,32 +14,53 @@ RED = (225, 0, 0)
 GREEN = (0, 250, 0)
 BLUE = (0, 0, 250)
 
+# Accessibility colors
+#White: Instead of pure white, use a slightly off-white color to reduce eye strain.
+WHITE_ACC = (224, 224, 224)
+WHITE = WHITE_ACC # Override
+#Black: Pure black can be harsh on the eyes, so a dark gray is often preferred.
+BLACK_ACC = (18, 18, 18)
+BLACK = BLACK_ACC # Override
+#Red: Use a less saturated red to avoid harshness.
+RED_ACC = (255, 107, 107)
+RED = RED_ACC # Override
+#Green: Opt for a softer green that maintains good contrast.
+GREEN_ACC = (76, 175, 80)
+GREEN = GREEN_ACC # Override
+#Blue: Choose a blue that is not too vibrant to ensure readability.
+BLUE_ACC = (66, 165, 245)
+BLUE = BLUE_ACC # Override
+
 # SIMULATION CONFIGURATION
 MAX_VELOCITY = 10
-POPULATION_SIZE = 1000
-LEARNING_RATE = 0.1
+POPULATION_SIZE = 100
+LEARNING_RATE = 0.2
 DISCOUNT_FACTOR = 0.95
 EPSILON = 0.5  # Exploration rate
 GRID_SIZE = 10  # Coarser grid to reduce Q-table size
 
 # GAME UI CONFIGURATION
-WIDTH, HEIGHT = 1920, 1080  # Size of screen
+WIDTH, HEIGHT = 800, 600 # Size of screen
 SCREEN_COLOR = BLACK
 FONT_SIZE = 20
 FONT_COLOR = GREEN
+
+# DOT CONFIGURATION
 DOT_SIZE = 2
-DOT_COLOR = WHITE
-BEST_DOT_SIZE = 4  # Larger size so its more visible
-BEST_DOT_COLOR = RED  # Highlight color for best dot
-GOAL = (WIDTH // 2, 25)  # Goal placement x, y
-GOAL_SIZE = 6
+DOT_COLOR = BLUE
+BEST_DOT_SIZE = 4 # Larger size so its more visible
+BEST_DOT_COLOR = RED # Highlight color for best dot
+
+# GOAL CONFIGURATION
+GOAL = (WIDTH // 2, 25) # Goal placement x, y
+GOAL_SIZE = 4
 GOAL_COLOR = GREEN
 
 # OBSTACLE CONFIGURATION
 OBSTACLE_COUNT = 4
 OBSTACLE_COLOR = WHITE
 OBSTACLE_MIN_WIDTH = 0
-OBSTACLE_MAX_WIDTH = 500
+OBSTACLE_MAX_WIDTH = 200
 OBSTACLE_MIN_HEIGHT = 0
 OBSTACLE_MAX_HEIGHT = 250
 
@@ -273,7 +294,7 @@ def main():
             f"Generation: {population.gen}",
             f"Best Fitness: {population.max_fitness:.4f}",
             f"Average Fitness: {population.average_fitness:.4f}",
-            f"Dots Reached Goal: {sum(dot.reached_goal for dot in population.dots)}"
+            f"Dots Reached Goal: {round(sum(dot.reached_goal for dot in population.dots)/POPULATION_SIZE*100)}%"
         ]
 
         text_location = 0
