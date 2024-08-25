@@ -8,7 +8,7 @@ import datetime
 import numpy as np
 
 # GENERAL CONFIGURATION
-SIMULATION_TYPE = "Reinforcement" # Player, Genetic, or Reinforcement
+SIMULATION_TYPE = SIMULATION_TEXT = "Genetic" # Player, Genetic, or Reinforcement
 POPULATION_SIZE = 200
 MAX_VELOCITY = 5
 
@@ -440,12 +440,15 @@ def main():
             text_location += i
             text_surface = font.render(metric, True, FONT_COLOR)
             screen.blit(text_surface, (10, HEIGHT - (20 + i * FONT_SIZE)))
-        text_surface = font_note.render(f"(Click for Snapshot. Esc to Exit)", True, FONT_COLOR)
+            
+        text_surface = font_note.render(f"Currently running {SIMULATION_TEXT} AI", True, FONT_COLOR)
         screen.blit(text_surface, (5, FONT_SIZE))
-        text_surface = font_note.render(f"(Previous best is {get_variable_name(BEST_DOT_COLOR)})", True, BEST_DOT_COLOR)
+        text_surface = font_note.render(f"(Click for Snapshot. Esc to Exit)", True, FONT_COLOR)
         screen.blit(text_surface, (5, FONT_SIZE * 2))
-        text_surface = font_note.render(f"(Goal is {get_variable_name(GOAL_COLOR)})", True, GOAL_COLOR)
+        text_surface = font_note.render(f"(Previous best is {get_variable_name(BEST_DOT_COLOR)})", True, BEST_DOT_COLOR)
         screen.blit(text_surface, (5, FONT_SIZE * 3))
+        text_surface = font_note.render(f"(Goal is {get_variable_name(GOAL_COLOR)})", True, GOAL_COLOR)
+        screen.blit(text_surface, (5, FONT_SIZE * 4))
         
         pygame.display.flip()
         clock.tick(60)
