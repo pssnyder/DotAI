@@ -1,3 +1,6 @@
+# ignore history directory
+.history/
+
 # Ignore simulation files
 .pkl
 
