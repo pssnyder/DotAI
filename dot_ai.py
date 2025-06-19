@@ -17,15 +17,15 @@ import numpy as np # NumPy is a powerful library for numerical computing, especi
 # - "Player": You control the dot (not implemented in this version, but could be an extension!).
 SIMULATION_TYPE = SIMULATION_TEXT = "Genetic" # Current options: "Genetic", "Reinforcement". (Player mode is a fun idea for later!)
 
-POPULATION_SIZE = 200 # For Genetic Algorithm: How many dots are in each generation. More dots mean more variety but slower simulation.
-MAX_VELOCITY = 5 # How fast a dot can move in any direction (pixels per frame).
+POPULATION_SIZE = 400 # For Genetic Algorithm: How many dots are in each generation. More dots mean more variety but slower simulation.
+MAX_VELOCITY = 2 # How fast a dot can move in any direction (pixels per frame).
 
 # --- 🧬 GENETIC ALGORITHM CONFIGURATION ---
 # These settings are specific to the "Genetic" AI mode.
 
-MUTATION_RATE = 0.01 # Chance (from 0.0 to 1.0) that a dot's "brain" (its movement instructions) will have a random change.
+MUTATION_RATE = 0.03 # Chance (from 0.0 to 1.0) that a dot's "brain" (its movement instructions) will have a random change.
                      # A small mutation rate helps explore new solutions without disrupting good ones too much.
-BRAIN_SIZE = 400 # How many steps/instructions are in a dot's "brain" for the Genetic Algorithm.
+BRAIN_SIZE = 500 # How many steps/instructions are in a dot's "brain" for the Genetic Algorithm.
                  # This is the maximum number of moves a dot can make in its lifetime.
 
 # --- 🤖 REINFORCEMENT LEARNING (Q-LEARNING) CONFIGURATION ---
@@ -75,7 +75,7 @@ GREEN = GREEN_ACC
 BLUE = BLUE_ACC
 
 # --- 🖥️ GAME UI (USER INTERFACE) CONFIGURATION ---
-WIDTH, HEIGHT = 800, 600 # Size of the game window in pixels (width, height).
+WIDTH, HEIGHT = 1800, 980 # Size of the game window in pixels (width, height).
 SCREEN_COLOR = BLACK # Background color of the game window.
 FONT_SIZE = 20 # Size of the text used for displaying information.
 FONT_COLOR = GREEN # Color of the information text.
@@ -94,12 +94,12 @@ GOAL_SIZE = 4 # Radius of the goal circle in pixels.
 GOAL_COLOR = GREEN # Color of the goal.
 
 # --- 🚧 OBSTACLE CONFIGURATION ---
-OBSTACLE_COUNT = 5 # How many obstacles will be randomly generated on the map.
+OBSTACLE_COUNT = 12 # How many obstacles will be randomly generated on the map.
 OBSTACLE_COLOR = WHITE # Color of the obstacles.
 OBSTACLE_MIN_WIDTH = 20 # Minimum width of an obstacle.
 OBSTACLE_MAX_WIDTH = 200 # Maximum width of an obstacle.
 OBSTACLE_MIN_HEIGHT = 20 # Minimum height of an obstacle.
-OBSTACLE_MAX_HEIGHT = 150 # Maximum height of an obstacle.
+OBSTACLE_MAX_HEIGHT = 50 # Maximum height of an obstacle.
 
 # --- ⚙️ MISCELLANEOUS CONFIGURATION (Internal Setup) ---
 # These settings are mostly for the program's internal logic. You usually don't need to change these.
