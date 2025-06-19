@@ -607,8 +607,8 @@ class Population:
         # 1. Elitism: The very best dot from the current generation gets to survive directly.
         # This ensures that our best solution so far is never lost.
         champion_clone = self.best_dot_object.clone() # Make a copy of the best dot.
-        champion_clone.is_best = True # Mark this one specially for display.
         champion_clone.reset() # Reset its state (like brain step) if it's carried over.
+        champion_clone.is_best = True # Mark this one specially for display.
         new_generation_dots.append(champion_clone)
 
         # 2. Fill the rest of the new generation by selecting parents and creating offspring.
